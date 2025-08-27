@@ -1,0 +1,7 @@
+// app/src/main/java/com/example/pokemon/NetworkResult.kt
+package com.example.pokemon
+
+sealed class NetworkResult<out T> {
+    data class Success<out T>(val data: T) : NetworkResult<T>()
+    data class Error(val message: String) : NetworkResult<Nothing>()
+}
