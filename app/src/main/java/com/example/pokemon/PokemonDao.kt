@@ -12,9 +12,9 @@ interface PokemonDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(pokemons: List<Pokemon>)
 
-    @Query("SELECT * FROM pokemon")
-    fun getAll(): Flow<List<Pokemon>>
+    @Query("SELECT * FROM Pokemon")
+    fun getAllPokemons(): Flow<List<Pokemon>>
 
-    @Query("SELECT * FROM pokemon WHERE name LIKE :query OR id = :id OR type LIKE :type")
-    fun search(query: String, id: Int = -1, type: String = ""): Flow<List<Pokemon>>
+    @Query("SELECT * FROM Pokemon WHERE name LIKE :query OR type LIKE :query")
+    fun searchPokemons(query: String): Flow<List<Pokemon>>
 }

@@ -1,21 +1,17 @@
 // app/src/main/java/com/example/pokemon/PokemonCard.kt
 package com.example.pokemon
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 
 @Composable
@@ -24,32 +20,38 @@ fun PokemonCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val type = PokemonType.fromName(pokemon.type) ?: return
+    val gradient = type.getGradient()
+
     Card(
         modifier = modifier
             .fillMaxWidth()
             .height(120.dp)
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(8.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .drawBehind {
+                    drawRect(gradient)
+                }
         ) {
-            Image(
-                painter = rememberImagePainter(data = pokemon.imageUrl),
-                contentDescription = "Изображение покемона",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.size(80.dp)
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column {
+            Column(
+                modifier = Modifier.padding(12.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
                 Text(
-                    text = pokemon.name,
-                    fontSize = 18.sp,
+                    text = pokemon.name.uppercase(),
+                    color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
-                Text(text = "Тип: ${pokemon.type}", fontSize = 14.sp)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Тип: ${pokemon.type}",
+                    color = Color.White.copy(alpha = 0.8f)
+                )
             }
         }
     }

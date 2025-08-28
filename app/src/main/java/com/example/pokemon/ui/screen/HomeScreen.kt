@@ -3,7 +3,12 @@ package com.example.pokemon
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -35,6 +40,7 @@ fun HomeScreen(
                     pokemons = result.data
                     isLoading = false
                 }
+
                 is NetworkResult.Error -> {
                     errorMessage = result.message
                     isLoading = false
@@ -83,27 +89,18 @@ fun HomeScreen(
                 }
             )
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(8.dp)
             ) {
-                items(pokemons.filter { pokemon ->
-                    query.isEmpty() || pokemon.name.contains(query, ignoreCase = true)
-                }) { pokemon ->
-                    PokemonCard(pokemon = pokemon, onClick = { onNavigateToDetail(pokemon) })
+                items(pokemons.filter { it.name.contains(query, ignoreCase = true) }) { pokemon ->
+                    PokemonCard(
+                        pokemon = pokemon,
+                        onClick = { onNavigateToDetail(pokemon) }
+                    )
                 }
-            }
-
-            Button(
-                onClick = { /* Загрузить следующую страницу */ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-            ) {
-                Text("Еще покемоны")
             }
         }
     }
 }
+
