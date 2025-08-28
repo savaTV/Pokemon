@@ -3,16 +3,23 @@ package com.example.pokemon
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
+import coil.size.Size
+import coil.transform.RoundedCornersTransformation
 
 @Composable
 fun PokemonCard(
@@ -21,38 +28,59 @@ fun PokemonCard(
     modifier: Modifier = Modifier
 ) {
     val type = PokemonType.fromName(pokemon.type) ?: return
-    val gradient = type.getGradient()
+    val gradient = Brush.linearGradient(
+        colors = listOf(type.color1, type.color2),
+        start = Offset(0f, 0f),
+        end = Offset(1f, 1f)
+    )
 
     Card(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
+            .padding(8.dp)
             .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .background(gradient)
+                .height(160.dp)
                 .drawBehind {
-                    drawRect(gradient)
+                    drawRect(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.5f)),
+                            startY = size.height * 0.75f,
+                            endY = size.height
+                        ),
+                        blendMode = BlendMode.Multiply
+                    )
                 }
         ) {
             Column(
-                modifier = Modifier.padding(12.dp),
-                verticalArrangement = Arrangement.Center
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top,
+                modifier = Modifier.fillMaxSize()
             ) {
-                Text(
-                    text = pokemon.name.uppercase(),
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Тип: ${pokemon.type}",
-                    color = Color.White.copy(alpha = 0.8f)
-                )
+
+                    // Изображение покемона по центру
+                    Image(
+                        painter = rememberImagePainter(data = pokemon.imageUrl),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(100.dp,100.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
+
+                    // Имя покемона под изображением
+                    Text(
+                        text = pokemon.name,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+
+                }
             }
         }
     }
-}

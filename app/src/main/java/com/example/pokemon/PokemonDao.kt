@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/pokemon/PokemonDao.kt
 package com.example.pokemon
 
 import androidx.room.Dao
@@ -15,6 +14,9 @@ interface PokemonDao {
     @Query("SELECT * FROM Pokemon")
     fun getAllPokemons(): Flow<List<Pokemon>>
 
-    @Query("SELECT * FROM Pokemon WHERE name LIKE :query OR type LIKE :query")
-    fun searchPokemons(query: String): Flow<List<Pokemon>>
+    @Query("SELECT * FROM Pokemon WHERE name LIKE :name AND type LIKE :type")
+    fun searchByNameAndType(name: String, type: String): Flow<List<Pokemon>>
+
+    @Query("SELECT * FROM Pokemon WHERE id = :id")
+    fun getPokemonById(id: Int): Flow<Pokemon?>
 }

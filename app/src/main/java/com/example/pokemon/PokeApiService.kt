@@ -6,10 +6,10 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @JsonClass(generateAdapter = true)
 data class PokemonListResponse(
@@ -40,6 +40,11 @@ data class Type(
     val name: String
 )
 
+@JsonClass(generateAdapter = true)
+data class PokemonCountResponse(
+    @Json(name = "count") val count: Int
+)
+
 fun getUrlFromUrl(url: String): String {
     val parts = url.split("/")
     return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${parts[6]}.png"
@@ -51,11 +56,14 @@ object PokeApiService {
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
 
-    private val service = retrofit.create(PokeApi::class.java)
+    val service: PokeApi = retrofit.create(PokeApi::class.java) // 👈 теперь это объект
 
     interface PokeApi {
         @GET("pokemon")
         suspend fun listPokemons(@Query("offset") offset: Int, @Query("limit") limit: Int): PokemonListResponse
+
+        @GET("pokemon")
+        suspend fun fetchPokemonCount(): PokemonCountResponse
 
         @GET("pokemon/{name}")
         suspend fun getPokemonDetails(@Path("name") name: String): PokemonDetailResponse
@@ -67,7 +75,6 @@ object PokeApiService {
             val id = index + offset + 1
             val detailResponse = withContext(Dispatchers.IO) { service.getPokemonDetails(entry.name) }
             val types = detailResponse.types.joinToString(", ") { it.type.name }
-
             Pokemon(
                 id = id,
                 name = entry.name,

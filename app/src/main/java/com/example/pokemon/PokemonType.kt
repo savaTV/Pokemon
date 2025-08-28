@@ -1,13 +1,11 @@
 // app/src/main/java/com/example/pokemon/PokemonType.kt
 package com.example.pokemon
 
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 enum class PokemonType(val typeName: String, val color1: Color, val color2: Color) {
     Normal("normal", Color(0xFFA8A77A), Color(0xFFDAD6C7)),
-    Fire("fire", Color(0xFFFF7755), Color(0xFFFFAA33)),
+    Fire("fire", Color(0xFFFF6464), Color(0xFFFFAA33)),
     Water("water", Color(0xFF6390F0), Color(0xFF96D9F9)),
     Grass("grass", Color(0xFF7AC74C), Color(0xFFB5D66D)),
     Electric("electric", Color(0xFFF7D02C), Color(0xFFFFE138)),
@@ -29,13 +27,5 @@ enum class PokemonType(val typeName: String, val color1: Color, val color2: Colo
         fun fromName(name: String): PokemonType? {
             return values().find { it.typeName == name.lowercase() }
         }
-    }
-
-    fun getGradient(): Brush {
-        return Brush.linearGradient(
-            colors = listOf(color1, color2),
-            start = Offset(0f, 0f),
-            end = Offset(1f, 1f)
-        )
     }
 }

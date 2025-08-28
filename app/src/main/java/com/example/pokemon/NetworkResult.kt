@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/pokemon/NetworkResult.kt
 package com.example.pokemon
 
 sealed class NetworkResult<out T> {

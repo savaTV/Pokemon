@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id ("kotlin-kapt")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.dagger.hilt.android") version "2.48"
     id("androidx.navigation.safeargs.kotlin") version "2.8.3" // Исправил на актуальную стабильную версию
@@ -40,8 +39,12 @@ android {
 // Удалил composeOptions, так как для Kotlin 2.0+ Compose Compiler встроен в плагин
 }
 dependencies {
+    implementation("androidx.compose.foundation:foundation:1.9.0")
+    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation(platform(libs.androidx.compose.bom))
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("androidx.compose.material:material-icons-extended:1.1.0")
     implementation ("androidx.room:room-runtime:2.7.2")
-    kapt ("androidx.room:room-compiler:2.7.2")
     implementation ("com.airbnb.android:lottie:6.0.1")
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.core.ktx)

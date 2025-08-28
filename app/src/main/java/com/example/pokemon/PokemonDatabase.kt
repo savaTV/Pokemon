@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/pokemon/PokemonDatabase.kt
 package com.example.pokemon
 
 import android.content.Context
@@ -8,7 +7,6 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [Pokemon::class], version = 1, exportSchema = false)
 abstract class PokemonDatabase : RoomDatabase() {
-
     abstract fun pokemonDao(): PokemonDao
 
     companion object {

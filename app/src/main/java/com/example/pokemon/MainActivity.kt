@@ -1,54 +1,50 @@
-// app/src/main/java/com/example/pokemon/MainActivity.kt
 package com.example.pokemon
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.Text
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.pokemon.ui.screen.HomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             val context = LocalContext.current
             val repository = PokemonRepository(context)
+            val viewModel: PokemonViewModel = viewModel { PokemonViewModel(repository) }
             val navController = rememberNavController()
-
-            PokemonAppTheme { // <-- Здесь!
+            PokemonAppTheme {
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
                         HomeScreen(
-                            repository = repository,
-                            onNavigateToDetail = { pokemon ->
-                                navController.navigate("detail/${pokemon.id}")
-                            },
-                            onSearch = { name, type ->
-                                repository.searchPokemons(name, type)
-                            }
+                            viewModel = viewModel,
+                            onNavigateToDetail = { id -> navController.navigate("detail/$id") },
+                            onNavigateToFilter = { navController.navigate("filter") }
                         )
                     }
-                    composable("detail/{id}") { backStackEntry ->
-                        val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: -1
-                        val pokemons by repository.localDataSource.searchPokemons("id=$id")
-                            .collectAsState(emptyList())
-                        val pokemon = pokemons.firstOrNull()
-
-                        if (pokemon != null) {
-                            PokemonDetailScreen(pokemon = pokemon, navController = navController)
-                        } else {
-                            Text(text = "Покемон не найден")
-                        }
+                    composable(
+                        "detail/{id}",
+                        arguments = listOf(navArgument("id") { type = NavType.IntType })
+                    ) { backStackEntry ->
+                        val id = backStackEntry.arguments?.getInt("id") ?: -1
+                        PokemonDetailScreen(
+                            viewModel = viewModel,
+                            pokemonId = id,
+                            navController = navController
+                        )
                     }
                     composable("filter") {
                         FilterScreen(
-                            onSearch = { query, type ->
+                            onApply = { name, type ->
+                                viewModel.searchPokemons(name, type)
                                 navController.popBackStack()
                             },
                             navController = navController

@@ -1,14 +1,14 @@
-// app/src/main/java/com/example/pokemon/DarkTheme.kt
 package com.example.pokemon
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-
-// Материал для светлой темы
 
 @Composable
 fun PokemonAppTheme(
@@ -40,7 +40,6 @@ fun PokemonAppTheme(
         onErrorContainer = Color(0xFF410002)
     )
 
-// Материал для тёмной темы
     val DarkColors = darkColorScheme(
         primary = Color(0xFFD5C6FF),
         onPrimary = Color(0xFF3B008C),
@@ -66,28 +65,17 @@ fun PokemonAppTheme(
         onErrorContainer = Color(0xFFFFDAD6)
     )
 
-    val Typography = MaterialTheme.typography
-
-    val Shapes = Shapes(
+    val colors = if (darkTheme) DarkColors else LightColors
+    val shapes = Shapes(
         small = RoundedCornerShape(4.dp),
         medium = RoundedCornerShape(8.dp),
         large = RoundedCornerShape(12.dp)
     )
 
-
-
-
-    val colors = if (darkTheme) {
-        DarkColors
-    } else {
-        LightColors
-    }
-
     MaterialTheme(
         colorScheme = colors,
-        typography = Typography,
-        shapes = Shapes,
+        typography = MaterialTheme.typography,
+        shapes = shapes,
         content = content
     )
-
 }
