@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">poki</string>
+    <string name="no_results">ошибка</string>
+    <string name="apply_filters">фильтер</string>
+</resources>
